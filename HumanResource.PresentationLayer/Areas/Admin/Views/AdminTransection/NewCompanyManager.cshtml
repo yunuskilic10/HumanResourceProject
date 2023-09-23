@@ -1,0 +1,252 @@
+﻿@{
+    ViewData["Title"] = "NewCompanyManager";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+}
+@model CreateDTO
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function isNumberKey(evt) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+
+            return false;
+
+        return true;
+
+    }
+</script>
+
+
+<body>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xxl-12">
+                <div class="card">
+                    <form asp-action="NewCompanyManager" asp-area="Admin" asp-controller="AdminTransection" method="post" class="needs-validation" novalidate id="invoice_form" enctype="multipart/form-data">
+                        <div class="card-body border-bottom border-bottom-dashed p-4">
+                            <div class="row">
+
+                                <div class="d-flex align-items-center">
+                                    <b class="card-title mb-0 flex-grow-1 badge bg-primary">Add Company Manager</b>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                    <thead class="align-middle">
+                                        <tr class="table-active" style="white-space:nowrap">
+                                            <th scope="col" style="width: 220px;">
+                                                First Name
+                                            </th>
+                                            <th scope="col" style="width: 220px;">
+                                                Second Name
+                                            </th>
+                                            <th scope="col" style="width: 220px;">
+                                                Last Name
+                                            </th>
+                                            <th scope="col" style="width: 220px;">
+                                                Second Last Name
+                                            </th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody id="newlink">
+                                        <tr id="1" class="product">
+                                            <td class="text-start">
+                                                <div class="mb-4">
+                                                    <input type="text" class="form-control " asp-for="FirstName" id="name" rows="1" oninput="copyText()" placeholder="Name" required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-4">
+                                                    <input type="text" class="form-control " asp-for="SecondName" id="name" rows="1" oninput="copyText()" placeholder="Second Name" required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-4">
+                                                    <input type="text" class="form-control " asp-for="LastName" id="name" rows="1" oninput="copyText()" placeholder="Last Name" required>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-4">
+                                                    <input type="text" class="form-control " asp-for="SecondLastName" id="name" rows="1" oninput="copyText()" placeholder="Second Last Name" required>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                    <thead class="align-middle">
+                                        <tr class="table-active" style="white-space:nowrap">
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex currency-select input-light align-items-center">
+                                                    Gender
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex currency-select input-light align-items-center">
+                                                    Company
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Identity Number
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Phone Number
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Email
+                                                </div>
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="1" class="product">
+                                            <td>
+                                                <div class="mb-2">
+                                                    <select asp-for="Gender" asp-items="ViewBag.Gender" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()">
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <select asp-for="CompanyId" asp-items="ViewBag.CompanyList" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()">
+                                                    </select>
+
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" asp-for="IdentityNumber" class="form-control" onkeypress="return isNumberKey(event)" maxlength="11">
+                                                </div>
+                                            </td>
+
+
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" onpaste="return false;" class="form-control" placeholder="Enter your phone number" oninput="updateFormatPhoneNumber(this)" asp-for="@Model.PhoneNumber" maxlength="14">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" class="form-control" placeholder="Enter E-mail." asp-for="PrivateMail">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                    <thead class="align-middle">
+                                        <tr class="table-active" style="white-space:nowrap">
+
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Address
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Birth City
+                                                </div>
+                                            </th>
+
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Birth Date
+                                                </div>
+                                            </th>
+
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Work Start Date
+                                                </div>
+                                            </th>
+                                            <th scope="col" style="width: 80px;">
+                                                <div class="d-flex input-light align-items-center">
+                                                    Salary
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="newlink">
+                                        <tr id="1" class="product">
+
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" asp-for="Address" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" asp-for="BirthCity" id="email" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="date" asp-for="BirthDate" id="date-field" class="form-control" required=""
+                                                           min="@DateTime.Now.AddYears(-60).ToString("yyyy-MM-dd")"
+                                                           max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")"
+                                                           placeholder="Birth Date">
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <div class="mb-2">
+
+                                                    <input type="date" asp-for="WorkStartDate" id="date-field" class="form-control" required="" value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="Work Start Date">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mb-2">
+                                                    <input type="text" asp-for="Salary" onkeypress="return isNumberKey(event)" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" maxlength="6">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            <table class="table table-borderless table-nowrap mb-0">
+                                <thead class="align-middle">
+                                    <tr class="table" style="white-space:nowrap">
+                                        <th scope="col" style="width: 100px;">
+                                            Upload Profile Photo
+                                        </th>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <input id="profile-img-file-input" type="file" onchange="readURL(this);" class="profile-img-file-input" asp-for="FormPhotoFile" accept=".jpg, .jpeg, .png">
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                <button type="submit" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="~/js/adddemantpage.js"></script>
+<script src="~/js/updatepage.js"></script>
+

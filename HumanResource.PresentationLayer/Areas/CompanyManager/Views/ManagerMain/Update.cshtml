@@ -1,0 +1,93 @@
+﻿@model UpdateDTO
+@{
+	ViewData["Title"] = "Update";
+	Layout = "~/Views/Shared/_HumanLayout.cshtml";
+}
+
+<div class="container-fluid">
+
+	<div class="position-relative mx-n4 mt-n4">
+		<div class="profile-wid-bg profile-setting-img">
+			<img src="~/velzon_html/default/assets/images/auth-one-bg.jpg" class="profile-wid-img" alt="">
+			<div class="overlay-content">
+				<div class="text-end p-3">
+					<div class="p-0 ms-auto rounded-circle profile-photo-edit">
+						<input id="profile-foreground-img-file-input" type="file" class="profile-foreground-img-file-input">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xxl-12">
+			<div class="card mt-xxl-n8">
+				<div class="card-body p-4">
+					<div class="tab-content">
+						<div class="tab-pane active" id="personalDetails" role="tabpanel">
+							<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+							<form asp-action="Update" asp-area="CompanyManager" asp-controller="ManagerMain" method="post" enctype="multipart/form-data">
+								<input type="hidden" asp-for="@Model.Id" />
+								<input type="hidden" asp-for="@Model.FirstName" />
+								<input type="hidden" asp-for="@Model.SecondName" />
+								<input type="hidden" asp-for="@Model.LastName" />
+								<input type="hidden" asp-for="@Model.SecondLastName" />
+								<input type="hidden" asp-for="@Model.PhotoFile" />
+								<input type="hidden" asp-for="@Model.FormPhotoFile" />
+								<input type="hidden" asp-for="@Model.JobName" />
+								<div class="col-xxl-12">
+									<div class="card mt-n5">
+										<div class="card-body p-4">
+											<div class="text-center">
+												<div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+													<img src="~/Pictures/@Model.PhotoFile" id="imageResult" class="rounded-circle avatar-xl img-thumbnail user-profile-image" alt="user-profile-image">
+													<div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+														<input id="profile-img-file-input" type="file" onchange="readURL(this);" class="profile-img-file-input" asp-for="FormPhotoFile" accept=".jpg, .jpeg, .png">
+														<label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
+															<span class="avatar-title rounded-circle bg-light text-body">
+																<i class="ri-camera-fill"></i>
+															</span>
+														</label>
+													</div>
+												</div>
+												<h5 class="fs-16 mb-1">@Model.FirstName @Model.SecondName @Model.LastName @Model.SecondLastName</h5>
+												<p class="text-muted mb-0">@Model.JobName</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="profile-user position-relative d-inline-block mx-auto  mb-4">
+									<div class="avatar-xs p-0 rounded-circle profile-photo-edit">
+										<input id="profile-img-file-input" type="file" class="profile-img-file-input" value="@Model.PhotoFile">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-lg-6">
+										<div class="mb-3">
+											<label for="phonenumberInput" class="form-label">Phone Number</label>
+											<input type="text" onpaste="return false;" class="form-control"  placeholder="Enter your phone number" oninput="updateFormatPhoneNumber(this)" asp-for="@Model.PhoneNumber" maxlength="14">
+										</div>
+									</div>
+									<div class="col-lg-6">
+										<div class="mb-3">
+											<label for="adressInput" class="form-label">Address</label>
+											<input type="text" class="form-control" value="@Model.Address" asp-for="@Model.Address">
+										</div>
+									</div>
+									<div asp-validation-summary="All" class="text-danger"></div>
+									<div class="col-lg-12">
+										<div class="hstack gap-2 justify-content-end">
+											<input type="submit" value="Update" class="btn btn-primary">
+											<a type="button" asp-action="Summary" asp-controller="ManagerMain" asp-area="CompanyManager" class="btn btn-soft-success">Cancel</a>
+										</div>
+									</div>
+								</div>
+							</form>
+							<br />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="~/js/updatepage.js"></script>

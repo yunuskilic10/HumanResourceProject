@@ -1,0 +1,677 @@
+﻿@using HumanResource.Domain.Entities.Concrete;
+@using Microsoft.AspNetCore.Identity;
+
+@inject SignInManager<AppUser> signInManager
+@inject UserManager<AppUser> userManager
+
+@{
+    var client = new HttpClient();
+    var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://currency-exchange.p.rapidapi.com/exchange?from=eur&to=try&q=1.0"),
+                Headers =
+    {
+        { "X-RapidAPI-Key", "be240aead7msh7346cf979503555p198b4djsn3300decf65e1" },
+
+        //{ "X-RapidAPI-Key", "a9e2308b7emsha7e499c9f2b4aacp11c1bcjsnd711f2798946" },
+        { "X-RapidAPI-Host", "currency-exchange.p.rapidapi.com" },
+    },
+            };
+    using (var response = await client.SendAsync(request))
+    {
+        //response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+
+        int indexOfDot = body.IndexOf('.'); if (indexOfDot != -1 && body.Length > indexOfDot + 2) { body = body.Substring(0, indexOfDot + 5); }
+        else
+        {
+            while (body.Length <= indexOfDot + 2)
+            {
+                body += "0";
+            }
+        }
+        ViewBag.euro = body;
+    }
+    var client2 = new HttpClient();
+    var request2 = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri("https://currency-exchange.p.rapidapi.com/exchange?from=usd&to=try&q=1.0"),
+                Headers =
+    {
+        { "X-RapidAPI-Key", "be240aead7msh7346cf979503555p198b4djsn3300decf65e1" },
+
+        //{ "X-RapidAPI-Key", "a9e2308b7emsha7e499c9f2b4aacp11c1bcjsnd711f2798946" },
+        { "X-RapidAPI-Host", "currency-exchange.p.rapidapi.com" },
+    },
+            };
+    using (var response2 = await client2.SendAsync(request2))
+    {
+        //response2.EnsureSuccessStatusCode();
+        var body2 = await response2.Content.ReadAsStringAsync();
+        int indexOfDot = body2.IndexOf('.'); if (indexOfDot != -1 && body2.Length > indexOfDot + 2) { body2 = body2.Substring(0, indexOfDot + 5); }
+        else
+        {
+            while (body2.Length <= indexOfDot + 2)
+            {
+                body2 += "0";
+            }
+        }
+
+        ViewBag.dollar = body2;
+    }
+
+}
+
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<!-- Mirrored from themesbrand.com/velzon/html/default/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 09 Aug 2023 13:54:20 GMT -->
+
+
+<head>
+    <meta charset="utf-8" />
+    <title>Human Resource | Begny </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/velzon_html/default/assets/images/favicon.ico" />
+    <!-- jsvectormap css -->
+    <link href="~/velzon_html/default/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+    <!--Swiper slider css-->
+    <link href="~/velzon_html/velzon_html/default/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+    <!-- Layout config Js -->
+    <script src="~/velzon_html/default/assets/js/layout.js"></script>
+    <!-- Bootstrap Css -->
+    <link href="~/velzon_html/default/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <!-- Icons Css -->
+    <link href="~/velzon_html/default/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="~/velzon_html/default/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <!-- custom Css-->
+    <link href="~/velzon_html/default/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Özel bir stil ekleyin */
+        .weather-icon {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        @if (signInManager.IsSignedIn(User))
+        {
+            if (User.IsInRole("Personnel") || User.IsInRole("CompanyManager") || User.IsInRole("Admin"))
+            {
+                //ClaimType, ASP.NET Core Identity ve kimlik doğrulama mekanizmalarında kullanılan bir terimdir. Bir kullanıcıya veya kimliğe ait bilgileri temsil eden anahtar-değer çiftleridir. Kısacası, bir kullanıcının sahip olduğu belirli özellikleri, rolleri, izinleri veya diğer tanımlayıcı bilgileri temsil eder.
+                //ClaimType, bir kimliği tanımlayan bir anahtardır ve genellikle bir dize olarak temsil edilir.
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                AppUser appUser = await userManager.FindByIdAsync(userId);
+                <header id="page-topbar">
+                    <div class="layout-width">
+                        <div class="navbar-header">
+                            <div class="d-flex">
+                                <div class="navbar-brand-box horizontal-logo">
+                                    @if (User.IsInRole("CompanyManager"))
+                                    {
+                                        <a asp-controller="ManagerMain" asp-action="Summary" asp-area="CompanyManager" class="logo logo-dark">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                            </span>
+                                        </a>
+
+                                        <a asp-controller="ManagerMain" asp-action="Summary" asp-area="CompanyManager" class="logo logo-light">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                            </span>
+                                        </a>
+                                    }
+                                    else if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-controller="AdminMain" asp-action="Summary" asp-area="Admin" class="logo logo-dark">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                            </span>
+                                        </a>
+
+                                        <a asp-controller="AdminMain" asp-action="Summary" asp-area="Admin" class="logo logo-light">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                            </span>
+                                        </a>
+                                    }
+                                    else if (User.IsInRole("Personnel"))
+                                    {
+
+                                        <a asp-controller="Main" asp-action="Summary" asp-area="Personnel" class="logo logo-dark">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                            </span>
+                                        </a>
+
+                                        <a asp-controller="Main" asp-action="Summary" asp-area="Personnel" class="logo logo-light">
+                                            <span class="logo-sm">
+                                                <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                            </span>
+                                            <span class="logo-lg">
+                                                <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                            </span>
+                                        </a>
+                                    }
+                                </div>
+                                <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
+                                    <span class="hamburger-icon">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </span>
+                                </button>
+
+                                    <div class="ms-1 header-item d-none d-sm-flex ">
+                                        <div class="text-muted hstack gap-2">
+                                            <div id="weatherInfo">
+                                                    <img class="weather-icon" src="" alt=" " id="weatherIcon">
+                                                    <span id="locationName"></span>
+                                                    <span id="temperature"></span> °C
+                                            </div>
+                                        </div>
+                                    </div>
+                                <form class="app-search d-none d-md-block"></form>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="ms-1 header-item d-none d-sm-flex">
+                                    <div class="text-muted hstack gap-2">
+                                        <img src="~/velzon_html/default/assets/images/svg/crypto-icons/usd.svg" alt="" class="avatar-xxs"> @ViewBag.dollar
+                                    </div>
+                                </div>
+
+                                <div class="ms-1 header-item d-none d-sm-flex">
+
+                                    <div class="text-muted hstack gap-2">
+                                        <img src="~/velzon_html/default/assets/images/svg/crypto-icons/eur.svg" alt="" class="avatar-xxs"> @ViewBag.Euro
+                                    </div>
+                                </div>
+
+
+                                <div class="ms-1 header-item d-none d-sm-flex">
+
+                                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" data-toggle="fullscreen">
+                                        <i class='bx bx-fullscreen fs-22'></i>
+                                    </button>
+                                </div>
+                                <div class="ms-1 header-item d-none d-sm-flex">
+                                    <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode">
+                                        <i class='bx bx-moon fs-22'></i>
+                                    </button>
+                                </div>
+                                <div class="dropdown ms-sm-3 header-item topbar-user">
+                                    <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="d-flex align-items-center">
+                                            <img class="rounded-circle header-profile-user" src="~/Pictures/@appUser.PhotoFile" alt="Header Avatar">
+                                            <img />
+                                            <span class="text-start ms-xl-2">
+                                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">@appUser.FirstName @appUser.SecondName @appUser.LastName @appUser.SecondLastName</span>
+                                            </span>
+                                        </span>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <h6 class="dropdown-header">Welcome @appUser.FirstName @appUser.SecondName @appUser.LastName @appUser.SecondLastName !</h6>
+                                        @if (User.IsInRole("Personnel"))
+                                        {
+                                            <a class="dropdown-item" asp-controller="Main" asp-action="Summary" asp-area="Personnel">
+                                                <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">
+                                                    Profile
+                                                </span>
+                                            </a>
+                                            <a class="dropdown-item" asp-controller="Main" asp-action="Detail" asp-area="Personnel" asp-route-id="@appUser.Id">
+                                                <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">
+                                                    Profile Details
+                                                </span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" method="get" asp-controller="Main" asp-action="Update" asp-area="Personnel" asp-route-id="@appUser.Id">
+                                                <span class="badge bg-success-subtle text-success mt-1 float-end">New</span>
+                                                <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">Settings</span>
+                                            </a>
+                                            <a class="dropdown-item" asp-action="SignOut" asp-controller="Login" asp-area=" ">
+                                                <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle" data-key="t-logout">Logout</span>
+                                            </a>
+
+                                        }
+                                        else if (User.IsInRole("CompanyManager"))
+                                        {
+                                            <a class="dropdown-item" asp-controller="ManagerMain" asp-action="Summary" asp-area="CompanyManager">
+                                                <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">
+                                                    Profile
+                                                </span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" method="get" asp-controller="ManagerMain" asp-action="Update" asp-area="CompanyManager" asp-route-id="@appUser.Id">
+                                                <span class="badge bg-success-subtle text-success mt-1 float-end">New</span>
+                                                <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">Settings</span>
+                                            </a>
+                                            <a class="dropdown-item" asp-action="SignOut" asp-controller="Login" asp-area=" ">
+                                                <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle" data-key="t-logout">Logout</span>
+                                            </a>
+                                        }
+                                        else if (User.IsInRole("Admin"))
+                                        {
+                                            <a class="dropdown-item" asp-controller="AdminMain" asp-action="Summary" asp-area="Admin">
+                                                <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">
+                                                    Profile
+                                                </span>
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" method="get" asp-controller="AdminMain" asp-action="Update" asp-area="Admin" asp-route-id="@appUser.Id">
+                                                <span class="badge bg-success-subtle text-success mt-1 float-end">New</span>
+                                                <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle">Settings</span>
+                                            </a>
+                                            <a class="dropdown-item" asp-action="SignOut" asp-controller="Login" asp-area=" ">
+                                                <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                                                <span class="align-middle" data-key="t-logout">Logout</span>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+                <br />
+                <br />
+                <br />
+                <br />
+                <div class="app-menu navbar-menu">
+                    <div class="navbar-brand-box">
+                        @if (User.IsInRole("CompanyManager"))
+                        {
+                            <a asp-controller="ManagerMain" asp-action="Summary" asp-area="CompanyManager" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                </span>
+                            </a>
+                            <a asp-controller="ManagerMain" asp-action="Summary" asp-area="CompanyManager" class="logo logo-light">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                </span>
+                            </a>
+                        }
+                        else if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="AdminMain" asp-action="Summary" asp-area="Admin" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                </span>
+                            </a>
+                            <a asp-controller="AdminMain" asp-action="Summary" asp-area="Admin" class="logo logo-light">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                </span>
+                            </a>
+                        }
+                        else if (User.IsInRole("Personnel"))
+                        {
+
+                            <a asp-controller="Main" asp-action="Summary" asp-area="Personnel" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-dark.png" alt="" height="17">
+                                </span>
+                            </a>
+                            <a asp-controller="Main" asp-action="Summary" asp-area="Personnel" class="logo logo-light">
+                                <span class="logo-sm">
+                                    <img src="~/velzon_html/default/assets/images/logo-sm.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="~/velzon_html/default/assets/images/logo-light.png" alt="" height="17">
+                                </span>
+                            </a>
+                        }
+                        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
+                            <i class="ri-record-circle-line"></i>
+                        </button>
+                    </div>
+                    <div id="scrollbar">
+                        <div class="container-fluid">
+                            <div id="two-column-menu">
+                            </div>
+                            <ul class="navbar-nav" id="navbar-nav">
+                                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                                @if (User.IsInRole("Personnel"))
+                                {
+                                    <li class="nav-item">
+
+                                        <a class="nav-link menu-link" href="#sidebarDashboardsAdvance" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                            <i class="fa-solid fa-money-bill-wave"></i> <span data-key="t-dashboards">Advance Processes</span>
+                                        </a>
+
+                                        <div class="collapse menu-dropdown" id="sidebarDashboardsAdvance">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                <li class="nav-item">
+                                                    <a asp-action="AddAdvance" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics">
+                                                        Add Advance <span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="AdvanceList" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics"> Advance List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="#sidebarDashboardsDemand" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                            <i class="fa-solid fa-file-invoice-dollar"></i> <span data-key="t-dashboards">Demand Processes</span>
+                                        </a>
+
+                                        <div class="collapse menu-dropdown" id="sidebarDashboardsDemand">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="AddDemand" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics">
+                                                        Add Demand <span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="DemandList" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics"> Demand List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="#sidebarDashboardsPermission" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                            <i class="fa-regular fa-calendar-days"></i> <span data-key="t-dashboards">Permission Processes</span>
+                                        </a>
+
+                                        <div class="collapse menu-dropdown" id="sidebarDashboardsPermission">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="AddPermission" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics">
+                                                        Add Permission <span class="badge badge-pill bg-danger" data-key="t-hot">New</span>
+                                                    </a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                    <a asp-action="PermissionList" asp-controller="Transection" asp-area="Personnel" class="nav-link" data-key="t-analytics"> Permission List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+
+                                }
+                                else if (User.IsInRole("Admin"))
+                                {
+                                    <li class="nav-item">
+
+                                        <a class="nav-link menu-link" href="#sidebarDashboards2" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards2">
+                                            <i class="fa-solid fa-money-bill-wave"></i> <span data-key="t-dashboards">Company Procces </span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarDashboards2">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="NewCompany" asp-controller="AdminTransection" asp-area="Admin" class="nav-link" data-key="t-analytics">
+                                                        New Company
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="CompanyList" asp-controller="AdminTransection" asp-area="Admin" class="nav-link" data-key="t-analytics">Company List </a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="nav-item">
+
+                                        <a class="nav-link menu-link" href="#sidebarDashboards6" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards2">
+                                            <i class="fa-solid fa-money-bill-wave"></i> <span data-key="t-dashboards">Company Manager Procces </span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarDashboards6">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="NewCompanyManager" asp-controller="AdminTransection" asp-area="Admin" class="nav-link" data-key="t-analytics">
+                                                        New Company Manager
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="CompanyManagerList" asp-controller="AdminTransection" asp-area="Admin" class="nav-link" data-key="t-analytics">Company Manager List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                }
+                                else if (User.IsInRole("CompanyManager"))
+                                {
+                                    <li class="nav-item">
+
+                                        <a class="nav-link menu-link" href="#sidebarDashboards2" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards2">
+                                            <i class="fa-solid fa-money-bill-wave"></i> <span data-key="t-dashboards">Advance Transactions</span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarDashboards2">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="AdvanceApprovalList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics">
+                                                        Approval List
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="AdvanceActiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics"> Activated List </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="AdvancePassiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics"> Rejected List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+
+                                        <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                                            <i class="fa-solid fa-file-invoice-dollar"></i><span data-key="t-dashboards">Demand Transactions</span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarDashboards">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="DemandApprovalList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics">
+                                                        Approval List
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="DemandActiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics"> Activated List </a>
+                                                </li>
+
+                                                <li class="nav-item">
+                                                    <a asp-action="DemandPassiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-analytics"> Rejected List </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="#sidebarLayouts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarLayouts">
+                                            <i class="fa-regular fa-calendar-days"></i> <span data-key="t-layouts">Permission Transactions</span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarLayouts">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a asp-action="PermissionApprovalList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal">
+                                                        Approval List
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="PermissionActiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal"> Activated List </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a asp-action="PermissionPassiveList" asp-controller="Confirmation" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal"> Rejected List </a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link menu-link" href="#sidebarManager" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarManager">
+                                            <i class="fa-solid fa-city"></i> <span data-key="t-layouts">Company Manager Transactions</span>
+                                        </a>
+                                        <div class="collapse menu-dropdown" id="sidebarManager">
+                                            <ul class="nav nav-sm flex-column">
+                                                <li class="nav-item">
+                                                    <a class="nav-link menu-link" href="#sidebarManager2" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarManager2">
+                                                        <i class="fa-solid fa-people-roof"></i> <span data-key="t-layouts">Departmend Transactions</span>
+                                                    </a>
+                                                    <div class="collapse menu-dropdown" id="sidebarManager2">
+                                                        <ul class="nav nav-sm flex-column">
+                                                            <a asp-action="DepartmendList" asp-controller="ManagerTransection" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal">
+                                                                Departmend List
+                                                            </a>
+                                                            <li class="nav-item">
+                                                                <a asp-action="CreateDepartmend" asp-controller="ManagerTransection" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal"> Add Departmend </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link menu-link" href="#sidebarManager3" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarManager3">
+                                                        <i class="fa-solid fa-users"></i> <span data-key="t-layouts">Personnel Transactions</span>
+                                                    </a>
+                                                    <div class="collapse menu-dropdown" id="sidebarManager3">
+                                                        <ul class="nav nav-sm flex-column">
+                                                            <a asp-action="AllPersonnelList" asp-controller="ManagerTransection" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal">
+                                                                Personnel List
+                                                            </a>
+                                                           
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link menu-link" href="#sidebarManager4" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarManager3">
+                                                        <i class="fa-solid fa-users"></i> <span data-key="t-layouts">Job Transactions</span>
+                                                    </a>
+                                                    <div class="collapse menu-dropdown" id="sidebarManager4">
+                                                        <ul class="nav nav-sm flex-column">
+                                                            <a asp-action="JobList" asp-controller="ManagerTransection" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal">
+                                                                Job List
+                                                            </a>@*
+                                                <li class="nav-item">
+                                                <a asp-action="CreatePersonnel" asp-controller="ManagerTransection" asp-area="CompanyManager" class="nav-link" data-key="t-horizontal"> Add Personnel </a>
+                                                </li>*@
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <!-- end Dashboard Menu -->
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-background"></div>
+                </div>
+                <div class="vertical-overlay"></div>
+                <div class="main-content">
+                    <div class="container-fluid">
+                        <main role="main" class="pb-6">
+                            @RenderBody()
+                        </main>
+                    </div>
+                    <br />
+
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    All Rights Reserved On The Sites <script>document.write(new Date().getFullYear())</script> © Copyright.
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="text-sm-end d-none d-sm-block">
+                                        Design & Develop by BEGNY
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            }
+        }
+    </div>
+    <button onclick="topFunction()" class="btn btn-danger btn-icon" id="back-to-top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+    <!-- Theme Settings -->
+    <!-- JAVASCRIPT -->
+    <script src="~/velzon_html/default/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/velzon_html/default/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="~/velzon_html/default/assets/libs/node-waves/waves.min.js"></script>
+    <script src="~/velzon_html/default/assets/libs/feather-icons/feather.min.js"></script>
+    <script src="~/velzon_html/default/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+    <script src="~/velzon_html/default/assets/js/plugins.js"></script>
+    <!-- apexcharts -->
+    <script src="~/velzon_html/default/assets/libs/apexcharts/apexcharts.min.js"></script>
+    <!-- Vector map-->
+    <script src="~/velzon_html/default/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+    <script src="~/velzon_html/default/assets/libs/jsvectormap/maps/world-merc.js"></script>
+    <!--Swiper slider js-->
+    <script src="~/velzon_html/default/assets/libs/swiper/swiper-bundle.min.js"></script>
+    <!-- Dashboard init -->
+    <script src="~/velzon_html/default/assets/js/pages/dashboard-ecommerce.init.js"></script>
+    <!-- App js -->
+    <script src="~/velzon_html/default/assets/js/app.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/weather.js"></script>
+
+   
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>*@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

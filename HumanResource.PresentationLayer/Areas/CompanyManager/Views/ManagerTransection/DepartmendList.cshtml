@@ -1,0 +1,61 @@
+﻿@using HumanResource.Applications.Models.DTOs.DepartmendDTO;
+
+@{
+    ViewData["Title"] = "DepartmendList";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+    int count = 1;
+}
+
+@model ICollection<DepartmendListDTO>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" id="invoiceList">
+                    <div class="card-header border-0">
+                            <div class="d-flex align-items-center">
+                                <b class="card-title mb-0 flex-grow-1 badge bg-primary">Departmend List</b>
+                            </div>
+                            <br />
+                        <div class="d-flex justify-content-end">
+                            <div class="flex-shrink-0">
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a asp-action="CreateDepartmend" asp-controller="ManagerTransection" asp-area="CompanyManager" class="btn btn-danger"><i class="ri-add-line align-bottom me-1"></i> Add Departmend</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="table-responsive table-card">
+                                <table class="table table-hover align-middle table-nowrap" id="invoiceTable">
+
+                                    <thead class="text-muted">
+                                        <tr>
+                                            <th data-sort="invoice_id">No</th>
+                                            <th data-sort="email">Name</th>
+                                            <th>Add Job</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody class="list form-check-all" id="invoice-list-data">
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr class="align-middle" onclick="location.href='@Url.Action("PersonnelList", "ManagerTransection", new { area = "companymanager", id = item.Id })';" style="cursor:pointer;">
+                                                <th data-sort="invoice_id">@count</th>
+                                                <th data-sort="customer_name">@item.Name</th>
+                                                <th data-sort="customer_name"><a class="btn btn-success" asp-action="CreateJob" asp-controller="ManagerTransection" asp-area="CompanyManager" asp-route-id="@item.Id">Add Job</a></th>
+                                            </tr>
+                                            count++;
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+

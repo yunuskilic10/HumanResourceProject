@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "NewCompany";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+}
+@model AdminAddCompanyDTO
+<script>
+    function isNumberKey(evt) {
+
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+
+            return false;
+
+        return true;
+
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function turkishToEnglish(text) {
+        var turkishChars = "ğüşıöçĞÜŞİÖÇ";
+        var englishChars = "gusiocGUSIOC";
+
+        for (var i = 0; i < turkishChars.length; i++) {
+            var regex = new RegExp(turkishChars.charAt(i), "g");
+            text = text.replace(regex, englishChars.charAt(i));
+        }
+
+        return text;
+    }
+    function copyText() {
+        // İsim metin kutusundan veriyi al
+        var nameInput = document.getElementById("name");
+        var name = nameInput.value.toLowerCase();
+        name = name.trim();
+        name = turkishToEnglish(name);
+
+        // E-posta metin kutusuna veriyi yaz
+        var emailInput = document.getElementById("email");
+        emailInput.value = name.replace(/\s/g, "") + "@@" + name.replace(/\s/g, "") + ".com";
+    }
+</script>
+<body>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-xxl-12">
+                    <div class="card">
+                        <form asp-action="NewCompany" asp-area="Admin" asp-controller="AdminTransection" method="post" class="needs-validation" novalidate id="invoice_form" enctype="multipart/form-data">
+                            <div class="card-body border-bottom border-bottom-dashed p-4">
+                                <div class="row">
+                                    <div class="d-flex align-items-center">
+                                        <b class="card-title mb-0 flex-grow-1 badge bg-primary">Add Company</b>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                            <tr class="table-active" style="white-space:nowrap">
+                                                <th scope="col" style="width: 220px;">
+                                                    Name
+                                                </th>
+                                                <th scope="col" style="width: 220px;">
+                                                    Logo
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="newlink">
+                                            <tr id="1" class="product">
+                                                <td class="text-start">
+                                                    <div class="mb-4">
+                                                        <input type="text" class="form-control " asp-for="Name" id="name" rows="1" oninput="copyText()" placeholder="Name" required>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input id="profile-img-file-input" type="file" onchange="readURL(this);" class="profile-img-file-input" asp-for="FormPhotoFile" accept=".jpg, .jpeg, .png">
+                                                </td>
+
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                            <tr class="table-active" style="white-space:nowrap">
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Company Type
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Tax No
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Tax Administration Type
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="1" class="product">
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <select asp-for="CompanyType" asp-items="ViewBag.CompanyType" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()">
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="text" asp-for="TaxNo" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onkeypress="return isNumberKey(event)" maxlength="10">
+
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <select asp-for="TaxAdminIsTrationType" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()" asp-items="ViewBag.TaxType">
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                            <tr class="table-active" style="white-space:nowrap">
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Phone
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Address
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        E-Mail
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="newlink">
+                                            <tr id="1" class="product">
+
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="text" onpaste="return false;" class="form-control" placeholder="Enter your phone number" oninput="updateFormatPhoneNumber(this)" asp-for="TelephoneNumber" maxlength="14">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="text" asp-for="Address" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency">
+
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="text" asp-for="Email" id="email" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                            <tr class="table-active" style="white-space:nowrap">
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Foundation Date
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Contract Start Date
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Contract End Date
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="newlink">
+                                            <tr id="1" class="product">
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="date" asp-for="FoundationDate" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" required="" min="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="date" asp-for="ContractStartDate" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" required="" min="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="mb-2">
+                                                        <input type="date" required="" min="@DateTime.Now.ToString("dd/MM/yyyy")" asp-for="ContractEndDate" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency">
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                    <button type="submit" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+
+<script src="~/js/adddemantpage.js"></script>
+<script src="~/js/updatepage.js"></script>
+

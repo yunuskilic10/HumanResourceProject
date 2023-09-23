@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "CompanyManagerList";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+    int count = 1;
+}
+
+
+
+@model ICollection<ListDTO>
+<script>
+    @functions {
+        string FormatPhoneNumber(string phoneNumber)
+        {
+            if (!string.IsNullOrEmpty(phoneNumber) && phoneNumber.Length == 10)
+            {
+                return $"{phoneNumber.Substring(0, 3)} {phoneNumber.Substring(3, 3)} {phoneNumber.Substring(6, 2)} {phoneNumber.Substring(8, 2)}";
+            }
+
+            return phoneNumber;
+        }
+    }
+
+</script>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" id="invoiceList">
+                    <div class="card-header border-0">
+                        <div class="d-flex align-items-center">
+                            <b class="card-title mb-0 flex-grow-1 badge bg-primary">Company Manager List</b>
+                        </div>
+                        <br />
+                        <div class="d-flex justify-content-end">
+                            <div class="flex-shrink-0">
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a asp-action="NewCompanyManager" asp-controller="AdminTransection" asp-area="Admin" class="btn btn-danger"><i class="ri-add-line align-bottom me-1"></i> Add Company Manager</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="card-body">
+                    <div>
+                        <div class="table-responsive table-card">
+                            <table class="table table-hover align-middle table-nowrap" id="invoiceTable">
+
+                                <thead class="text-muted">
+                                    <tr>
+                                        <th data-sort="invoice_id">No</th>
+                                        <th data-sort="customer_name" class="text-center">Photo</th>
+                                        <th data-sort="email">Identity</th>
+                                        <th data-sort="email">Name</th>
+                                        <th data-sort="email">Mail</th>
+                                        <th data-sort="country">Phone</th>
+                                        <th data-sort="action">Status</th>
+                                    </tr>
+
+                                </thead>
+                                <tbody class="list form-check-all" id="invoice-list-data">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="align-middle" onclick="location.href='@Url.Action("PersonnelDetails", "AdminTransection", new { area = "Admin", id = item.Id })';" style="cursor:pointer;">
+                                            <th data-sort="invoice_id">@count</th>
+                                            <th data-sort="invoice_id" class="text-center"> <img src="~/Pictures/@item.PhotoFile" id="imageResult" class="rounded-circle avatar-md img-thumbnail user-profile-image" alt="user-profile-image"></th>
+                                            <th data-sort="email">@item.IdentityNumber</th>
+                                            <th data-sort="customer_name">@item.FirstName @item.SecondName @item.LastName @item.SecondLastName</th>
+                                            <th data-sort="customer_name">@item.Email</th>
+                                            <th class="text-muted">+(90) @FormatPhoneNumber(item.PhoneNumber)</th>
+
+                                            <th>
+                                                @if (item.Status == HumanResource.Domain.Enums.Status.Approval)
+                                                {
+                                                    <span class="badge bg-warning">Coming Soon</span>
+                                                }
+                                                else if (item.Status == HumanResource.Domain.Enums.Status.Active)
+                                                {
+                                                    <span class="badge bg-success">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Passive</span>
+                                                }
+                                            </th>
+                                        </tr>
+                                        count++;
+                                    }
+                                </tbody>
+                            </table>
+                            <div class="noresult" style="display: none">
+                                <div class="text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
+                                    <h5 class="mt-2">Sorry! No Result Found</h5>
+                                    <p class="text-muted mb-0">We've searched more than 150+ invoices We did not find any invoices for you search.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade flip" id="deleteOrder" tabindex="-1" aria-labelledby="deleteOrderLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body p-5 text-center">
+                                    <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json" trigger="loop" colors="primary:#405189,secondary:#f06548" style="width:90px;height:90px"></lord-icon>
+                                    <div class="mt-4 text-center">
+                                        <h4>You are about to delete a order ?</h4>
+                                        <p class="text-muted fs-15 mb-4">Deleting your order will remove all of your information from our database.</p>
+                                        <div class="hstack gap-2 justify-content-center remove">
+                                            <button class="btn btn-link link-success fw-medium text-decoration-none" id="deleteRecord-close" data-bs-dismiss="modal"><i class="ri-close-line me-1 align-middle"></i> Close</button>
+                                            <button class="btn btn-danger" id="delete-record">Yes, Delete It</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>

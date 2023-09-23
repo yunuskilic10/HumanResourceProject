@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "DemandActiveList";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+    int count = 1;
+}
+
+@model ICollection<ListDemandDTO>
+
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" id="invoiceList">
+                    <div class="card-header border-0">
+                        <div class="d-flex align-items-center">
+                            <b class="card-title mb-0 flex-grow-1 badge bg-primary">Active Demand List</b>
+                        </div>
+                       @* <div class="d-flex align-items-center">
+                            <h5 class="card-title mb-0 flex-grow-1">Active Demand List</h5>
+                            <div class="flex-shrink-0">
+                            </div>
+                        </div>*@
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="table-responsive table-card">
+                                <table class="table align-middle table-nowrap" id="invoiceTable">
+                                    <thead class="text-muted">
+                                        <tr>
+                                            <th data-sort="invoice_id">No</th>
+                                            <th data-sort="invoice_id">Personnel Id</th>
+                                            <th data-sort="invoice_id">Personnel</th>
+                                            <th data-sort="customer_name">Description</th>
+                                            <th data-sort="email">Salary Demand</th>
+                                            <th data-sort="date">Currency</th>
+                                            <th data-sort="email">Demand Type</th>
+                                            <th data-sort="invoice_amount">Bill</th>
+                                            <th data-sort="action">Response Date</th>
+                                        </tr>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <th data-sort="invoice_id">@count</th>
+                                                <th data-sort="invoice_id">@item.AppUser.IdentityNumber</th>
+                                                <th data-sort="invoice_id">@item.AppUser.FirstName @item.AppUser.LastName</th>
+                                                <th data-sort="customer_name">@item.Name</th>
+                                                <th data-sort="email">@item.SalaryDemandAmount</th>
+                                                <th data-sort="date">@item.Currency</th>
+                                                <th data-sort="email">@item.DemandType</th>
+                                                <th data-sort="invoice_amount">
+                                                    <a href="~/Bills/@item.BillExtension" target="_blank">Open File</a>
+                                                </th>
+                                                <th data-sort="email">@item.ResponseDate</th>
+                                            </tr>
+                                            count++;
+                                        }
+                                    </thead>
+                                    <tbody class="list form-check-all" id="invoice-list-data">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

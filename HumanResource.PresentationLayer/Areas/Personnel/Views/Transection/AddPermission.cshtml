@@ -1,0 +1,107 @@
+﻿
+
+@{
+    ViewData["Title"] = "AddPermission";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+}
+
+
+@model CreatePermissionDTO
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<body>
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-xxl-12">
+                    <div class="card">
+                        <form asp-action="AddPermission" asp-area="Personnel" asp-controller="Transection" class="needs-validation" novalidate id="invoice_form" enctype="multipart/form-data">
+                            <input type="hidden" asp-for="@Model.AppUser.Gender" />
+                            <input type="hidden" asp-for="@Model.AppUser" />
+                            <div class="card-body border-bottom border-bottom-dashed p-4">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="profile-user mx-auto  mb-3">
+                                            <h1>Add Permission</h1>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="card-body p-4">
+                                <div class="table-responsive">
+                                    <table class="invoice-table table table-borderless table-nowrap mb-0">
+                                        <thead class="align-middle">
+                                            <tr class="table-active" style="white-space:nowrap">
+                                                <th scope="col" style="width: 220px;">
+                                                    Description
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Permission Type
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Beginning Date
+                                                    </div>
+                                                </th>
+                                                <th scope="col" style="width: 80px;">
+                                                    <div class="d-flex currency-select input-light align-items-center">
+                                                        Finish Date
+                                                    </div>
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="newlink">
+                                            <tr id="1" class="product">
+                                                <td class="text-start">
+                                                    <div class="mb-4">
+                                                        <textarea class="form-control bg-light border-0" asp-for="Name" id="companyAddress" rows="1" placeholder="Description" required></textarea>
+                                                    </div>
+                                                </td>
+                                                @if (Model.AppUser.Gender == HumanResource.Domain.Enums.Gender.Male)
+                                                {
+                                                    <td>
+                                                        <div class="mb-2">
+                                                            <select asp-for="MalePermissionType" asp-items="ViewBag.MalePermissionType" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()">
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                }
+                                                else if (Model.AppUser.Gender == HumanResource.Domain.Enums.Gender.Female)
+                                                {
+                                                    <td>
+                                                        <div class="mb-2">
+                                                            <select asp-for="FemalePermissionType" class="form-control" class="form-selectborder-0 border-0 bg-light" data-choices data-choices-search-false id="choices-payment-currency" onchange="otherPayment()" asp-items="ViewBag.FemalePermissionType">
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                }
+                                                <td class="mb-2">
+                                                    <input type="date" asp-for="BeginingDate" id="date-field" class="form-control" required="" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" placeholder="Beginning Date">
+                                                </td>
+                                                <td class="mb-2">
+
+                                                    <input type="date" asp-for="FinishDate" id="date-field" min="@DateTime.Now.AddDays(2).ToString("yyyy-MM-dd")" value="@DateTime.Now.AddDays(2).ToString("yyyy-MM-dd")" class="form-control" required="" placeholder="Finish Date">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="hstack gap-2 justify-content-end d-print-none mt-4">
+                                    <button type="submit" class="btn btn-success"><i class="ri-printer-line align-bottom me-1"></i> Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="~/js/adddemantpage.js"></script>

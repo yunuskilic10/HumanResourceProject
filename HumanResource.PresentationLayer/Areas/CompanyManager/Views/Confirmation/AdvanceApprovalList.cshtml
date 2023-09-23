@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewData["Title"] = "AdvanceApprovalList";
+    Layout = "~/Views/Shared/_HumanLayout.cshtml";
+    int count = 1;
+}
+@model ICollection<ListAdvanceDTO>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script>
+    //Silme işlemi için onay mesajını gösteren fonksiyon
+    function silmeOnayi() {
+        if (confirm("Are You Sure? Do you want to reject?")) {
+            alert("Deletion process has been successfully completed");
+            return true; // Formun gönderilmesine izin ver
+        } else {
+            alert("Deletion has been canceled");
+            return false; // Formun gönderilmesini engelle
+        }
+    }
+
+    document.getElementById("silForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Formun otomatik gönderilmesini engelle
+    });
+</script>
+
+<script>
+    //Silme işlemi için onay mesajını gösteren fonksiyon
+    function kabulOnayi() {
+        if (confirm("Are You Sure? Do You Want to Accept?")) {
+            alert("Acception process has been successfully completed");
+            return true; // Formun gönderilmesine izin ver
+        } else {
+            alert("Acception has been canceled");
+            return false; // Formun gönderilmesini engelle
+        }
+    }
+
+    document.getElementById("acceptForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Formun otomatik gönderilmesini engelle
+    });
+</script>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card" id="invoiceList">
+                    <div class="card-header border-0">
+                        <div class="d-flex align-items-center">
+                            <b class="card-title mb-0 flex-grow-1 badge bg-primary">Approval Permissions</b>
+                        </div>
+                        @*<div class="d-flex align-items-center">
+                            <h5 class="card-title mb-0 flex-grow-1">Approval Permissions</h5>
+                        </div>*@
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <div class="table-responsive table-card">
+                                <table class="table align-middle table-nowrap" id="invoiceTable">
+                                    <thead class="text-muted">
+                                        <tr>
+                                            <th data-sort="invoice_id">No</th>
+                                            <th data-sort="invoice_id">Personnel Id</th>
+                                            <th data-sort="invoice_id">Personnel</th>
+                                            <th data-sort="customer_name">Description</th>
+                                            <th data-sort="email">Advance Type</th>
+                                            <th data-sort="email">Price</th>
+                                            <th data-sort="email">Currency</th>
+                                            <th data-sort="action">Accept</th>
+                                            <th data-sort="action">Reject</th>
+                                        </tr>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <th data-sort="invoice_id">@count</th>
+                                                <th data-sort="invoice_id">@item.AppUser.IdentityNumber</th>
+                                                <th data-sort="invoice_id">@item.AppUser.FirstName @item.AppUser.LastName</th>
+                                                <th data-sort="customer_name">@item.Name</th>
+                                                <th data-sort="customer_name">@item.AdvanceType</th>
+                                                <th data-sort="customer_name">@item.Price</th>
+                                                <th data-sort="customer_name">@item.Currency</th>                                             
+                                                <th>
+                                                    <form asp-action="AdvanceApprovalToActiveList" asp-controller="Confirmation" asp-area="CompanyManager" asp-route-id="@item.Id" method="post">
+                                                        <button type="submit" class="btn btn-outline-success" id="onayButon" onclick=" return kabulOnayi()"><i class="fa-solid fa-check"></i></button>
+                                                    </form>
+                                                </th>
+                                                <th>
+
+                                                    <form asp-action="AdvanceApprovalToPassiveList" asp-controller="Confirmation" asp-area="CompanyManager" asp-route-id="@item.Id" method="post">
+                                                        <button type="submit" class="btn btn-outline-danger ri-delete-bin-5-fill" id="silButon" onclick=" return silmeOnayi()"></button>
+                                                    </form>
+                                                </th>
+
+                                            </tr>
+                                            count++;
+                                        }
+                                    </thead>
+                                    <tbody class="list form-check-all" id="invoice-list-data">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
