@@ -1,7 +1,7 @@
 # HumanResourceProject
 <div align="center">
 <h4>Website working video</h4>
-<a href="https://www.linkedin.com/posts/emre-karaomeroglu_sizlerle-daha-%C3%B6ncesinde-geli%C5%9Ftirmeye-devam-ugcPost-7109587584648908801-1kxN?utm_source=share&utm_medium=member_desktop" >
+<a href="https://www.linkedin.com/posts/yunus-kilic1_sizlerle-daha-%C3%B6ncesinde-geli%C5%9Ftirmeye-devam-activity-7111363644830957568--nGD?utm_source=share&utm_medium=member_desktop" >
 <img src="GitImages/BegnyHomePage.PNG" alt="Watch the video" width="600" height="350"/>
 </a>
 </div>
