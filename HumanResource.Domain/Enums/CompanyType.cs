@@ -8,7 +8,7 @@ namespace HumanResource.Domain.Enums
 {
     public enum CompanyType
     {
-        LTDSTI = 1, //limited
+        LTDSTI = 3, //limited
         AS, //anonim
         KS, //şahıs şirket türü
         
