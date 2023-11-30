@@ -8,7 +8,7 @@ namespace HumanResource.Domain.Enums
 {
     public enum AdvanceType
     {
-        Individual =1,
+        Individual =2,
         Institutional
     }
 }
